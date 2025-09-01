@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - localshop-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: LocalShop.AuthService/Dockerfile
+    ports:
+      - "7001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__AuthDb=Server=sqlserver;Database=LocalShopAuthDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sqlserver
+    networks:
+      - localshop-network
+
+  # Product Service
+  product-service:
+    build:
+      context: .
+      dockerfile: LocalShop.ProductService/Dockerfile
+    ports:
+      - "7002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ProductDb=Server=sqlserver;Database=LocalShopProductDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sqlserver
+    networks:
+      - localshop-network
+
+  # API Gateway
+  gateway:
+    build:
+      context: .
+      dockerfile: LocalShop.Gateway/Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - auth-service
+      - product-service
+    networks:
+      - localshop-network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  localshop-network:
+    driver: bridge

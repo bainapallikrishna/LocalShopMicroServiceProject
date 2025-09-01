@@ -1,0 +1,62 @@
+cd LocalShop.Infrastructure
+dotnet ef migrations add InitialCreate --startup-project ../LocalShop
+dotnet ef database update --startup-project ../LocalShop
+===========================================================
+dotnet ef migrations add InitialCreate --project LocalShop.Infrastructure --startup-project LocalShop
+dotnet ef database update --project LocalShop.Infrastructure --startup-project LocalShop
+
+dotnet ef database drop --force --project LocalShop.Infrastructure --startup-project LocalShop
+
+
+migrationBuilder.Sql("UPDATE Products SET Description = 'Default' WHERE Description IS NULL");
+========================================================
+
+dotnet ef migrations remove
+dotnet ef migrations add insertdatainrole --startup-project ../LocalShop
+
+dotnet ef database update --startup-project ../LocalShop --verbose
+
+dotnet ef migrations add InitialUserRoleSetup
+dotnet ef database update
+
+
+dotnet ef database update --project ../LocalShop.Infrastructure --startup-project ../LocalShop --verbose
+
+dotnet add package AutoMapper --version 13.0.1
+dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection --version 13.0.1
+
+dotnet add package AutoMapper
+dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
+
+
+=========================================================================
+
+Open Cloud Shell
+
+Go to Azure Portal
+
+Click the Cloud Shell icon at the top-right (looks like >_).
+
+Choose Bash or PowerShell (either works for zip deploy)
+
+The first time you open Cloud Shell, it might ask you to create storage — accept the defaults.
+
+Upload your file
+
+In the Cloud Shell window, look at the top-right corner.
+
+Click the three-dot menu (⋮).
+
+Select Upload (sometimes labeled Upload/Download files).
+
+Browse to C:\Krishna\BACKEND\LocalShop\publish.zip and select it.
+
+It will upload the file to your Cloud Shell home directory (~/).
+
+If you want to split across lines in PowerShell
+az webapp deployment source config-zip `
+  --resource-group LocalShopRG `
+  --name localshop `
+  --src publish.zip
+
+
