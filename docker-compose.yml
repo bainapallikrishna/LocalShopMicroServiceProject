@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: LocalShop.ProductService/Dockerfile
     ports:
-      - "7002:80"
+      - "7003:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__ProductDb=Server=sqlserver;Database=LocalShopProductDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
